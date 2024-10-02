@@ -2,11 +2,8 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
-    "paths": {
-      "@user-management-api/db/*": ["../db/dist/*"]
-    }
+    "rootDir": "./src"
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "prisma/**/*.prisma"],
   "exclude": ["node_modules", "__tests__", "dist"]
 }

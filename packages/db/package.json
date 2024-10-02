@@ -1,27 +1,36 @@
 {
-  "name": "db",
+  "name": "@user-management-api/db",
   "version": "1.0.0",
   "description": "DB definition",
   "keywords": [],
   "author": "Omar Ferreiro <IcarusTheFly@users.noreply.github.com>",
   "license": "ISC",
-  "main": "lib/db.js",
   "directories": {
-    "lib": "lib",
+    "prisma": "prisma",
     "test": "__tests__"
   },
   "files": [
-    "lib"
+    "prisma"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/IcarusTheFly/user-management-api.git"
   },
   "scripts": {
+    "build": "tsc -p tsconfig.json",
     "test": "node ./__tests__/db.test.js"
   },
   "bugs": {
     "url": "https://github.com/IcarusTheFly/user-management-api/issues"
   },
-  "homepage": "https://github.com/IcarusTheFly/user-management-api#readme"
+  "homepage": "https://github.com/IcarusTheFly/user-management-api#readme",
+  "devDependencies": {
+    "@types/node": "22.7.4",
+    "prisma": "^5.20.0",
+    "ts-node": "10.9.2",
+    "typescript": "5.6.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.20.0"
+  }
 }
