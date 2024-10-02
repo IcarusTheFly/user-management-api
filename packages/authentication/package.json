@@ -1,0 +1,27 @@
+{
+  "name": "authentication",
+  "version": "1.0.0",
+  "description": "Authentication and Authorization",
+  "keywords": [],
+  "author": "Omar Ferreiro <IcarusTheFly@users.noreply.github.com>",
+  "license": "ISC",
+  "main": "lib/authentication.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IcarusTheFly/user-management-api.git"
+  },
+  "scripts": {
+    "test": "node ./__tests__/authentication.test.js"
+  },
+  "bugs": {
+    "url": "https://github.com/IcarusTheFly/user-management-api/issues"
+  },
+  "homepage": "https://github.com/IcarusTheFly/user-management-api#readme"
+}

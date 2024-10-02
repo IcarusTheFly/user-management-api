@@ -1,0 +1,27 @@
+{
+  "name": "real-time-notifications",
+  "version": "1.0.0",
+  "description": "Real-time notifications",
+  "keywords": [],
+  "author": "Omar Ferreiro <IcarusTheFly@users.noreply.github.com>",
+  "license": "ISC",
+  "main": "lib/real-time-notifications.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IcarusTheFly/user-management-api.git"
+  },
+  "scripts": {
+    "test": "node ./__tests__/real-time-notifications.test.js"
+  },
+  "bugs": {
+    "url": "https://github.com/IcarusTheFly/user-management-api/issues"
+  },
+  "homepage": "https://github.com/IcarusTheFly/user-management-api#readme"
+}

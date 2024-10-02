@@ -1,0 +1,26 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "API Server with Fastify",
+  "author": "Omar Ferreiro <IcarusTheFly@users.noreply.github.com>",
+  "homepage": "https://github.com/IcarusTheFly/user-management-api#readme",
+  "license": "ISC",
+  "main": "lib/server.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IcarusTheFly/user-management-api.git"
+  },
+  "scripts": {
+    "test": "node ./__tests__/server.test.js"
+  },
+  "bugs": {
+    "url": "https://github.com/IcarusTheFly/user-management-api/issues"
+  }
+}
