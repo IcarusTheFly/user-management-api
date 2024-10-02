@@ -5,10 +5,19 @@
     "packages/*"
   ],
   "scripts": {
+    "lint": "lerna run lint",
+    "dev": "lerna run dev",
     "test": "lerna run test"
   },
-  "dependencies": {},
   "devDependencies": {
+    "@eslint/eslintrc": "3.1.0",
+    "@eslint/js": "9.11.1",
+    "@typescript-eslint/eslint-plugin": "^8.8.0",
+    "eslint": "9.11.1",
+    "globals": "15.10.0",
     "lerna": "8.1.8"
+  },
+  "dependencies": {
+    "ts-node-dev": "^2.0.0"
   }
 }
