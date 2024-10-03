@@ -1,3 +1,10 @@
+const userIdValidationError = (id: string) => {
+  if (isNaN(Number(id))) {
+    return `Validation error: ID (${id}) is not a valid number`;
+  }
+  return null;
+};
+
 export const validateCreateUser = (email: string, password: string) => {
   const errors = [];
   if (!email) {
@@ -18,6 +25,66 @@ export const validateCreateUser = (email: string, password: string) => {
     errors.push({
       message:
         "Validation error: body/password must NOT have more than 64 characters",
+    });
+  }
+
+  return errors;
+};
+
+export const validateUpdateUser = (
+  id: string,
+  email?: string,
+  password?: string,
+  name?: string,
+  isAdmin?: boolean
+) => {
+  const errors = [];
+  const userIdErrorMessage = userIdValidationError(id);
+  if (userIdErrorMessage) {
+    errors.push({
+      message: userIdErrorMessage,
+    });
+  }
+  if (!email && !password && !name && !isAdmin) {
+    errors.push({
+      message: "Validation error: body must have at least one property",
+    });
+  }
+  if (password) {
+    if (password.length < 8) {
+      errors.push({
+        message:
+          "Validation error: body/password must NOT have fewer than 8 characters",
+      });
+    } else if (password.length > 64) {
+      errors.push({
+        message:
+          "Validation error: body/password must NOT have more than 64 characters",
+      });
+    }
+  }
+
+  return errors;
+};
+
+export const validateDeleteUser = (id: string) => {
+  const errors = [];
+  const userIdErrorMessage = userIdValidationError(id);
+  if (userIdErrorMessage) {
+    errors.push({
+      message: userIdErrorMessage,
+    });
+  }
+
+  return errors;
+};
+
+export const validateGetUser = (id: string) => {
+  const errors = [];
+  const userIdErrorMessage = userIdValidationError(id);
+  if (userIdErrorMessage) {
+    errors.push({
+      message: userIdErrorMessage,
     });
   }
 

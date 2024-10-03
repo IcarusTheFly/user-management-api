@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { userUpdateProps } from "./users.types";
 
 const prisma = new PrismaClient();
 
@@ -23,6 +24,21 @@ export const getUserByEmail = async (email: string) => {
   });
 };
 
+export const emailUsedByAnotherUser = async (email: string, id: number) => {
+  const anotherUser = await prisma.user.findFirst({
+    where: {
+      email: email,
+      NOT: { id: id },
+    },
+  });
+
+  if (anotherUser) {
+    return true;
+  }
+
+  return false;
+};
+
 export const createUser = async (
   email: string,
   password: string,
@@ -37,6 +53,34 @@ export const createUser = async (
       isAdmin,
       createdAt: new Date(),
     },
+  });
+};
+
+export const updateUser = async (
+  id: number,
+  email?: string,
+  password?: string,
+  name?: string,
+  isAdmin: boolean = false
+) => {
+  const updateData: userUpdateProps = {};
+
+  if (email !== undefined) {
+    updateData.email = email;
+  }
+  if (password !== undefined) {
+    updateData.password = password;
+  }
+  if (name !== undefined) {
+    updateData.name = name;
+  }
+  if (isAdmin !== undefined) {
+    updateData.isAdmin = isAdmin;
+  }
+
+  return prisma.user.update({
+    where: { id: id },
+    data: updateData,
   });
 };
 

@@ -49,6 +49,27 @@ const userCreateBodySchema = {
   },
 };
 
+const userUpdateBodySchema = {
+  type: "object",
+  properties: {
+    email: {
+      type: "string",
+      format: "email",
+    },
+    password: {
+      type: "string",
+      minLength: 8,
+      maxLength: 64,
+    },
+    name: {
+      type: "string",
+    },
+    isAdmin: {
+      type: "boolean",
+    },
+  },
+};
+
 export const allUsersResponseSchema = {
   schema: {
     querystring: {
@@ -108,6 +129,23 @@ export const userResponseSchema = {
 export const userCreateSchema = {
   schema: {
     body: userCreateBodySchema,
+    response: {
+      201: {
+        type: "object",
+        properties: {
+          data: userObjectSchema,
+          errors: { type: "null" },
+        },
+      },
+      400: errorsResponseSchema,
+      500: errorsResponseSchema,
+    },
+  },
+};
+
+export const userUpdateSchema = {
+  schema: {
+    body: userUpdateBodySchema,
     response: {
       201: {
         type: "object",

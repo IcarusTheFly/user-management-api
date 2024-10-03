@@ -1,21 +1,28 @@
-import { serverConfig } from "../../config";
+import { paginationOptions } from "../../config";
 import { FastifyReply, FastifyRequest } from "fastify";
 import {
   constructPaginationUrls,
   createUser,
   deleteUser,
+  emailUsedByAnotherUser,
   getAllUsers,
   getUser,
   getUserByEmail,
+  updateUser,
 } from "./users.services";
-import { validateCreateUser } from "./users.validators";
+import {
+  validateCreateUser,
+  validateDeleteUser,
+  validateGetUser,
+  validateUpdateUser,
+} from "./users.validators";
 
 export async function getAllUsersController(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  const defaultLimit = serverConfig.pagination.defaultLimit;
-  const defaultSkip = serverConfig.pagination.defaultSkip;
+  const defaultLimit = paginationOptions.defaultLimit;
+  const defaultSkip = paginationOptions.defaultSkip;
 
   const { limit = defaultLimit, skip = defaultSkip } = request.query as {
     limit?: number;
@@ -45,8 +52,8 @@ export async function getAllUsersController(
       },
     });
   } catch (error) {
-    console.error(error);
-    reply.status(500).send({
+    request.log.error(error);
+    return reply.status(500).send({
       data: null,
       meta: null,
       errors: [
@@ -63,14 +70,26 @@ export async function getUserController(
   reply: FastifyReply
 ) {
   const { id } = request.params as { id: string };
+  const validationErrors = validateGetUser(id);
+  if (validationErrors.length > 0) {
+    request.log.error("Validation error");
+    return reply.status(400).send({
+      data: null,
+      errors: validationErrors,
+    });
+  }
+
+  const numericId = Number(id);
   try {
-    const user = await getUser(Number(id));
+    const user = await getUser(numericId);
     if (user === null) {
+      const errorMessage = `User with id (${numericId}) not found`;
+      request.log.error(errorMessage);
       return reply.status(404).send({
         data: null,
         errors: [
           {
-            message: `User with id (${id}) not found`,
+            message: errorMessage,
           },
         ],
       });
@@ -80,12 +99,12 @@ export async function getUserController(
       errors: null,
     });
   } catch (error) {
-    console.error(error);
-    reply.status(500).send({
+    request.log.error(error);
+    return reply.status(500).send({
       data: null,
       errors: [
         {
-          message: `An unexpected error occurred while retrieving user with id: ${id}`,
+          message: `An unexpected error occurred while retrieving user with id: ${numericId}`,
         },
       ],
     });
@@ -108,6 +127,7 @@ export async function createUserController(
   // create our own validations. Hence, implementing something basic
   const validationErrors = validateCreateUser(email, password);
   if (validationErrors.length > 0) {
+    request.log.error("Validation error");
     return reply.status(400).send({
       data: null,
       errors: validationErrors,
@@ -117,18 +137,20 @@ export async function createUserController(
   try {
     const existingUser = await getUserByEmail(email);
     if (existingUser) {
+      const errorMessage = `A user with the email address (${email}) already exists`;
+      request.log.error(errorMessage);
       return reply.status(400).send({
         data: null,
         errors: [
           {
-            message: `A user with the email address (${email}) already exists`,
+            message: errorMessage,
           },
         ],
       });
     }
 
     const user = await createUser(email, password, name, isAdmin);
-    reply.status(201).send({
+    return reply.status(201).send({
       data: {
         id: user.id,
         email: user.email,
@@ -139,8 +161,93 @@ export async function createUserController(
       errors: null,
     });
   } catch (error) {
-    console.error(error);
-    reply.status(500).send({
+    request.log.error(error);
+    return reply.status(500).send({
+      errors: [
+        {
+          message: `An unexpected error occurred while creating user: ${error}`,
+        },
+      ],
+    });
+  }
+}
+
+export async function updateUserController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const { id } = request.params as { id: string };
+  const { email, password, name, isAdmin } = request.body as {
+    email?: string;
+    password?: string;
+    name?: string;
+    isAdmin?: boolean;
+  };
+
+  const validationErrors = validateUpdateUser(
+    id,
+    email,
+    password,
+    name,
+    isAdmin
+  );
+  if (validationErrors.length > 0) {
+    request.log.error("Validation error");
+    return reply.status(400).send({
+      data: null,
+      errors: validationErrors,
+    });
+  }
+
+  const numericId = Number(id);
+  try {
+    const existingUser = await getUser(numericId);
+    if (existingUser === null) {
+      const errorMessage = `User with id (${numericId}) not found`;
+      request.log.error(errorMessage);
+      return reply.status(404).send({
+        data: null,
+        errors: [
+          {
+            message: errorMessage,
+          },
+        ],
+      });
+    }
+
+    if (email) {
+      const newEmailAlreadyInUse = await emailUsedByAnotherUser(
+        email,
+        numericId
+      );
+      if (newEmailAlreadyInUse) {
+        const errorMessage = `This email address (${email}) is being used by another user`;
+        request.log.error(errorMessage);
+        return reply.status(400).send({
+          data: null,
+          errors: [
+            {
+              message: errorMessage,
+            },
+          ],
+        });
+      }
+    }
+
+    const user = await updateUser(numericId, email, password, name, isAdmin);
+    return reply.status(200).send({
+      data: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        isAdmin: user.isAdmin,
+        createdAt: user.createdAt,
+      },
+      errors: null,
+    });
+  } catch (error) {
+    request.log.error(error);
+    return reply.status(500).send({
       errors: [
         {
           message: `An unexpected error occurred while creating user: ${error}`,
@@ -155,27 +262,39 @@ export async function deleteUserController(
   reply: FastifyReply
 ) {
   const { id } = request.params as { id: string };
+  const validationErrors = validateDeleteUser(id);
+  if (validationErrors.length > 0) {
+    request.log.error("Validation error");
+    return reply.status(400).send({
+      data: null,
+      errors: validationErrors,
+    });
+  }
+
+  const numericId = Number(id);
   try {
-    const user = await getUser(Number(id));
-    if (user === null) {
+    const existingUser = await getUser(numericId);
+    if (existingUser === null) {
+      const errorMessage = `User with id (${numericId}) not found`;
+      request.log.error(errorMessage);
       return reply.status(404).send({
         data: null,
         errors: [
           {
-            message: `User with id (${id}) not found`,
+            message: errorMessage,
           },
         ],
       });
     }
-    await deleteUser(Number(id));
-    reply.status(204).send({});
+    await deleteUser(numericId);
+    return reply.status(204).send({});
   } catch (error) {
-    console.error(error);
-    reply.status(500).send({
+    request.log.error(error);
+    return reply.status(500).send({
       data: null,
       errors: [
         {
-          message: `An unexpected error occurred while deleting user with id: ${id}`,
+          message: `An unexpected error occurred while deleting user with id: ${numericId}`,
         },
       ],
     });
