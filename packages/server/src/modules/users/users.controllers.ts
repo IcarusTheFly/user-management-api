@@ -16,6 +16,7 @@ import {
   validateGetUser,
   validateUpdateUser,
 } from "./users.validators";
+import { UserCreateBody, UserUpdateBody } from "./users.types";
 
 export async function getAllUsersController(
   request: FastifyRequest,
@@ -115,12 +116,7 @@ export async function createUserController(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  const { email, password, name, isAdmin } = request.body as {
-    email: string;
-    password: string;
-    name?: string;
-    isAdmin?: boolean;
-  };
+  const { email, password, name, isAdmin } = request.body as UserCreateBody;
 
   // Fastify schemas already validate data types and format
   // For scalable and maintainable code, we might as well
@@ -177,12 +173,7 @@ export async function updateUserController(
   reply: FastifyReply
 ) {
   const { id } = request.params as { id: string };
-  const { email, password, name, isAdmin } = request.body as {
-    email?: string;
-    password?: string;
-    name?: string;
-    isAdmin?: boolean;
-  };
+  const { email, password, name, isAdmin } = request.body as UserUpdateBody;
 
   const validationErrors = validateUpdateUser(
     id,

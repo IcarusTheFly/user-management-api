@@ -28,10 +28,9 @@
     "url": "https://github.com/IcarusTheFly/user-management-api/issues"
   },
   "dependencies": {
+    "@fastify/jwt": "9.0.1",
     "@user-management-api/db": "1.0.0",
-    "fastify": "5.0.0",
-    "fastify-type-provider-zod": "^4.0.1",
-    "zod": "3.23.8"
+    "fastify": "5.0.0"
   },
   "devDependencies": {
     "@types/node": "22.7.4",

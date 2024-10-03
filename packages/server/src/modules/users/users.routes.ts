@@ -12,15 +12,51 @@ import {
   userCreateSchema,
   userUpdateSchema,
 } from "./users.schemas";
+import { controlRoleBasedAccess } from "../../middleware/controlRoleBasedAccess";
 
 export const userRoutes = async (server: FastifyInstance) => {
-  server.get("/", allUsersResponseSchema, getAllUsersController);
+  server.get(
+    "/",
+    {
+      preValidation: [server.authenticate, controlRoleBasedAccess(false)],
+      ...allUsersResponseSchema,
+    },
+    getAllUsersController
+  );
 
-  server.post("/", userCreateSchema, createUserController);
+  server.post(
+    "/",
+    {
+      preValidation: [server.authenticate, controlRoleBasedAccess(true)],
+      ...userCreateSchema,
+    },
+    createUserController
+  );
 
-  server.get("/:id", userResponseSchema, getUserController);
+  server.get(
+    "/:id",
+    {
+      preValidation: [server.authenticate, controlRoleBasedAccess(false)],
+      ...userResponseSchema,
+    },
+    getUserController
+  );
 
-  server.put("/:id", userUpdateSchema, updateUserController);
+  server.put(
+    "/:id",
+    {
+      preValidation: [server.authenticate, controlRoleBasedAccess(true)],
+      ...userUpdateSchema,
+    },
+    updateUserController
+  );
 
-  server.delete("/:id", userResponseSchema, deleteUserController);
+  server.delete(
+    "/:id",
+    {
+      preValidation: [server.authenticate, controlRoleBasedAccess(true)],
+      ...userResponseSchema,
+    },
+    deleteUserController
+  );
 };

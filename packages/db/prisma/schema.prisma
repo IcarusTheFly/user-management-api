@@ -10,7 +10,8 @@ datasource db {
 model User {
   id    Int     @id @default(autoincrement())
   email String  @unique @db.VarChar(255)
-  password String @db.VarChar(64)
+  password String @db.VarChar(255)
+  salt String @db.VarChar(255)
   name  String? @db.VarChar(255)
   isAdmin Boolean @default(false)
   createdAt DateTime @default(now())

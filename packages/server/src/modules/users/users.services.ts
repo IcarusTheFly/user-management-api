@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
-import { userUpdateProps } from "./users.types";
+import { UserUpdateProps } from "./users.types";
+import { encryptPassword } from "../../utils/passwordHandler";
 
 const prisma = new PrismaClient();
 
@@ -45,12 +46,15 @@ export const createUser = async (
   name?: string,
   isAdmin: boolean = false
 ) => {
+  const { hash, salt } = encryptPassword(password);
+
   return prisma.user.create({
     data: {
       email,
-      password,
       name,
       isAdmin,
+      password: hash,
+      salt: salt,
       createdAt: new Date(),
     },
   });
@@ -63,7 +67,7 @@ export const updateUser = async (
   name?: string,
   isAdmin: boolean = false
 ) => {
-  const updateData: userUpdateProps = {};
+  const updateData: UserUpdateProps = {};
 
   if (email !== undefined) {
     updateData.email = email;
