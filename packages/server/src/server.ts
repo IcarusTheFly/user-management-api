@@ -19,15 +19,6 @@ export const server: FastifyInstance = fastify({
   logger: loggerOptions[ENV],
 });
 
-declare module "fastify" {
-  interface FastifyInstance {
-    authenticate: (
-      request: FastifyRequest,
-      reply: FastifyReply
-    ) => Promise<void>;
-  }
-}
-
 const startServer = async () => {
   try {
     server.setErrorHandler(fastifyErrorHandler);

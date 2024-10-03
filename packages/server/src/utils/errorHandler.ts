@@ -6,23 +6,25 @@ const fastifyErrorHandler = (
   reply: FastifyReply
 ) => {
   if (error.validation) {
-    request.log.error("Validation error");
+    const errorMessage = "Validation error: " + error.message;
+    request.log.error(errorMessage);
     return reply.status(400).send({
       data: null,
       errors: [
         {
-          message: "Validation error: " + error.message,
+          message: errorMessage,
         },
       ],
     });
   }
 
-  request.log.error(error);
+  const errorMessage = `An unexpected error occurred: ${error}`;
+  request.log.error(errorMessage);
   return reply.status(500).send({
     data: null,
     errors: [
       {
-        message: `An unexpected error occurred: ${error}`,
+        message: errorMessage,
       },
     ],
   });

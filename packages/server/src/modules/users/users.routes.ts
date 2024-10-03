@@ -18,7 +18,7 @@ export const userRoutes = async (server: FastifyInstance) => {
   server.get(
     "/",
     {
-      preValidation: [server.authenticate, controlRoleBasedAccess(false)],
+      preValidation: [controlRoleBasedAccess(false)],
       ...allUsersResponseSchema,
     },
     getAllUsersController
@@ -27,7 +27,7 @@ export const userRoutes = async (server: FastifyInstance) => {
   server.post(
     "/",
     {
-      preValidation: [server.authenticate, controlRoleBasedAccess(true)],
+      preValidation: [controlRoleBasedAccess(true)],
       ...userCreateSchema,
     },
     createUserController
@@ -36,7 +36,7 @@ export const userRoutes = async (server: FastifyInstance) => {
   server.get(
     "/:id",
     {
-      preValidation: [server.authenticate, controlRoleBasedAccess(false)],
+      preValidation: [controlRoleBasedAccess(false)],
       ...userResponseSchema,
     },
     getUserController
@@ -45,7 +45,7 @@ export const userRoutes = async (server: FastifyInstance) => {
   server.put(
     "/:id",
     {
-      preValidation: [server.authenticate, controlRoleBasedAccess(true)],
+      preValidation: [controlRoleBasedAccess(true)],
       ...userUpdateSchema,
     },
     updateUserController
@@ -54,7 +54,7 @@ export const userRoutes = async (server: FastifyInstance) => {
   server.delete(
     "/:id",
     {
-      preValidation: [server.authenticate, controlRoleBasedAccess(true)],
+      preValidation: [controlRoleBasedAccess(true)],
       ...userResponseSchema,
     },
     deleteUserController
