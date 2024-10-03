@@ -1,8 +1,4 @@
-import fastify, {
-  FastifyInstance,
-  FastifyReply,
-  FastifyRequest,
-} from "fastify";
+import fastify, { FastifyInstance } from "fastify";
 import fastifyJwt from "@fastify/jwt";
 import { loggerOptions } from "./config";
 import fastifyErrorHandler from "./utils/errorHandler";
@@ -25,16 +21,6 @@ const startServer = async () => {
     server.register(fastifyJwt, {
       secret: JWT_SECRET,
     });
-    server.decorate(
-      "authenticate",
-      async (request: FastifyRequest, reply: FastifyReply) => {
-        try {
-          await request.jwtVerify();
-        } catch (err) {
-          reply.send(err);
-        }
-      }
-    );
 
     await server.register(userRoutes, { prefix: "/api/users" });
     await server.register(loginRoutes);

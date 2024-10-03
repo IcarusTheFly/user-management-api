@@ -14,11 +14,13 @@ export async function loginHandler(
   const user = await authenticateUser(body.email, body.password);
 
   if (user === null) {
+    const errorMessage = "Invalid email or password";
+    request.log.error(errorMessage);
     return reply.status(401).send({
       data: null,
       errors: [
         {
-          message: "Invalid email or password",
+          message: errorMessage,
         },
       ],
     });
