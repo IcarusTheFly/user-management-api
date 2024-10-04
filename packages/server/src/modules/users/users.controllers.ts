@@ -19,6 +19,7 @@ import {
   validateUserAvatarFile,
 } from "./users.validators";
 import { UserCreateBody, UserUpdateBody } from "./users.types";
+import { broadcastNotification } from "@user-management-api/real-time-notifications";
 
 export async function getAllUsersController(
   request: FastifyRequest,
@@ -148,14 +149,18 @@ export async function createUserController(
     }
 
     const user = await createUser(email, password, name, isAdmin);
+    const createdData = {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      isAdmin: user.isAdmin,
+      createdAt: user.createdAt,
+    };
+    broadcastNotification(
+      `[User: ${user.id}] :: User created with data: ${JSON.stringify(createdData)}`
+    );
     return reply.status(201).send({
-      data: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        isAdmin: user.isAdmin,
-        createdAt: user.createdAt,
-      },
+      data: createdData,
       errors: null,
     });
   } catch (error) {
@@ -228,14 +233,18 @@ export async function updateUserController(
     }
 
     const user = await updateUser(numericId, email, password, name, isAdmin);
+    const updatedData = {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      isAdmin: user.isAdmin,
+      createdAt: user.createdAt,
+    };
+    broadcastNotification(
+      `[User: ${id}] :: User updated with data: ${JSON.stringify(updatedData)}`
+    );
     return reply.status(200).send({
-      data: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        isAdmin: user.isAdmin,
-        createdAt: user.createdAt,
-      },
+      data: updatedData,
       errors: null,
     });
   } catch (error) {
@@ -280,6 +289,7 @@ export async function deleteUserController(
       });
     }
     await deleteUser(numericId);
+    broadcastNotification(`[User: ${id}] :: User deleted`);
     return reply.status(204).send({});
   } catch (error) {
     request.log.error(error);
@@ -315,7 +325,9 @@ export async function uploadUserAvatarController(
       try {
         const fileName = `${id}-${Date.now()}-${part.filename}`;
         await uploadAvatar(part, fileName, Number(id));
+        const successMessage = `Avatar successfully uploaded (${fileName})`;
         request.log.info(`Avatar successfully uploaded (${fileName})`);
+        broadcastNotification(`[User: ${id}] :: ${successMessage}`);
         return reply.status(201).send({
           data: {
             avatarFileName: fileName,

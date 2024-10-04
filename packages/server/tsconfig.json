@@ -3,8 +3,10 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
+    "baseUrl": "./",
     "paths": {
-      "@user-management-api/db/*": ["../db/dist/*"]
+      "@user-management-api/db/*": ["../db/src/*"],
+      "@user-management-api/real-time-notifications/*": ["../real-time-notifications/src/*"]
     }
   },
   "include": ["src/**/*.ts"],

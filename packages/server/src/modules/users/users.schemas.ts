@@ -183,6 +183,7 @@ export const userDeleteSchema = {
 export const userUploadAvatarSchema = {
   schema: {
     body: {
+      type: "object",
       required: ["file"],
       properties: {
         file: { type: "string", format: "binary" },
