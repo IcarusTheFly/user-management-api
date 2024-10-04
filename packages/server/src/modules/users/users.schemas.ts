@@ -73,6 +73,7 @@ const userUpdateBodySchema = {
 
 export const allUsersResponseSchema = {
   schema: {
+    tags: ["User"],
     querystring: {
       type: "object",
       properties: {
@@ -112,6 +113,7 @@ export const allUsersResponseSchema = {
 
 export const userResponseSchema = {
   schema: {
+    tags: ["User"],
     response: {
       200: {
         type: "object",
@@ -133,6 +135,7 @@ export const userResponseSchema = {
 
 export const userCreateSchema = {
   schema: {
+    tags: ["User"],
     body: userCreateBodySchema,
     response: {
       201: {
@@ -152,6 +155,7 @@ export const userCreateSchema = {
 
 export const userUpdateSchema = {
   schema: {
+    tags: ["User"],
     body: userUpdateBodySchema,
     response: {
       201: {
@@ -171,6 +175,7 @@ export const userUpdateSchema = {
 
 export const userDeleteSchema = {
   schema: {
+    tags: ["User"],
     response: {
       204: { description: "No Content", type: "null" },
       400: errorsResponseSchema,
@@ -182,8 +187,9 @@ export const userDeleteSchema = {
 
 export const userUploadAvatarSchema = {
   schema: {
+    tags: ["User"],
+    consumes: ["multipart/form-data"],
     body: {
-      type: "object",
       required: ["file"],
       properties: {
         file: { type: "string", format: "binary" },

@@ -1,5 +1,6 @@
 export const loginSchema = {
   schema: {
+    tags: ["Login"],
     body: {
       type: "object",
       required: ["email", "password"],
@@ -22,10 +23,23 @@ export const loginSchema = {
           accessToken: { type: "string" },
         },
       },
+      400: {
+        type: "object",
+        properties: {
+          errors: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                message: { type: "string" },
+              },
+            },
+          },
+        },
+      },
       401: {
         type: "object",
         properties: {
-          data: { type: "null" },
           errors: {
             type: "array",
             items: {

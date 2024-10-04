@@ -1,23 +1,20 @@
 import fastify, { FastifyInstance } from "fastify";
-import fastifyJwt from "@fastify/jwt";
-import fastifyRateLimit from "@fastify/rate-limit";
-import fastifyMultipart from "@fastify/multipart";
-import fastifyWebsocket from "@fastify/websocket";
-import { fileUploadOptions, loggerOptions } from "./config";
+import { apiVersion, loggerOptions } from "./config";
 import fastifyErrorHandler from "./utils/errorHandler";
 import { loginRoutes } from "./modules/login/login.routes";
 import { userRoutes } from "./modules/users/users.routes";
 import { websocketRoutes } from "./modules/websockets/websockets.routes";
+import registerJwtPlugin from "./plugins/jwt";
+import registerRateLimitPlugin from "./plugins/rateLimit";
+import registerMultipartPlugin from "./plugins/multipart";
+import registerWebsocketPlugin from "./plugins/swagger";
+import registerSwaggerPlugin from "./plugins/websocket";
 
 const PORT: number = Number(process.env.PORT) || 3000;
 const HOST: string = process.env.HOST || "0.0.0.0";
 const ENVIRONMENT: "development" | "production" | "test" =
   (process.env.ENVIRONMENT as "development" | "production" | "test") ||
   "production";
-const JWT_SECRET: string = process.env.JWT_SECRET || "";
-const RATE_LIMIT: number = Number(process.env.RATE_LIMIT) || 50;
-const RATE_LIMIT_TIME_WINDOW: string =
-  process.env.RATE_LIMIT_TIME_WINDOW || "1 minute";
 
 export const server: FastifyInstance = fastify({
   logger: loggerOptions[ENVIRONMENT],
@@ -25,20 +22,22 @@ export const server: FastifyInstance = fastify({
 
 const startServer = async () => {
   try {
+    // Register custom handlers
     server.setErrorHandler(fastifyErrorHandler);
-    await server.register(fastifyJwt, {
-      secret: JWT_SECRET,
-    });
-    await server.register(fastifyRateLimit, {
-      max: RATE_LIMIT,
-      timeWindow: RATE_LIMIT_TIME_WINDOW,
-    });
-    await server.register(fastifyMultipart, fileUploadOptions);
-    await server.register(fastifyWebsocket);
 
-    await server.register(websocketRoutes, { prefix: "/api/websockets" });
-    await server.register(userRoutes, { prefix: "/api/users" });
-    await server.register(loginRoutes);
+    // Register plugins
+    await registerJwtPlugin(server);
+    await registerRateLimitPlugin(server);
+    await registerMultipartPlugin(server);
+    await registerWebsocketPlugin(server);
+    await registerSwaggerPlugin(server);
+
+    // Register routes
+    await server.register(websocketRoutes, {
+      prefix: `/api/${apiVersion}/websockets`,
+    });
+    await server.register(userRoutes, { prefix: `/api/${apiVersion}/users` });
+    await server.register(loginRoutes, { prefix: `/api/${apiVersion}/` });
     await server.listen({ port: PORT, host: HOST });
   } catch (error) {
     server.log.error(error);

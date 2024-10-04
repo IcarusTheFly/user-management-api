@@ -4,7 +4,7 @@ import { MultipartFile } from "@fastify/multipart";
 import { PrismaClient } from "@prisma/client";
 import { UserUpdateProps } from "./users.types";
 import { encryptPassword } from "../../utils/passwordHandler";
-import { uploadDir } from "../../config";
+import { fileUploadOptions, uploadDir } from "../../config";
 
 const prisma = new PrismaClient();
 
@@ -129,7 +129,24 @@ export const uploadAvatar = async (
   const filePath = path.join(uploadDirectory, fileName);
 
   await new Promise((resolve, reject) => {
+    let fileSize = 0;
     const writeStream = fs.createWriteStream(filePath);
+
+    part.file.on("data", (chunk) => {
+      fileSize += chunk.length;
+
+      if (fileSize >= fileUploadOptions.limits.fileSize) {
+        writeStream.destroy();
+        part.file.destroy();
+
+        const error = {
+          message: `Validation error: File size exceeds the allowed limit (${fileUploadOptions.limits.fileSize} bytes)`,
+          statusCode: 413,
+        };
+        reject(error);
+      }
+    });
+
     part.file.pipe(writeStream);
     writeStream.on("finish", resolve);
     writeStream.on("error", reject);

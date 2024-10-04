@@ -2,6 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { LoginInput } from "./login.types";
 import { server } from "../../server";
 import { authenticateUser } from "./login.services";
+import { validateLogin } from "./login.validators";
 
 export async function loginHandler(
   request: FastifyRequest<{
@@ -9,15 +10,22 @@ export async function loginHandler(
   }>,
   reply: FastifyReply
 ) {
-  const body = request.body;
+  const { email, password } = request.body;
 
-  const user = await authenticateUser(body.email, body.password);
+  const validationErrors = validateLogin(email, password);
+  if (validationErrors.length > 0) {
+    request.log.error("Validation error");
+    return reply.status(400).send({
+      errors: validationErrors,
+    });
+  }
+
+  const user = await authenticateUser(email, password);
 
   if (user === null) {
     const errorMessage = "Invalid email or password";
     request.log.error(errorMessage);
     return reply.status(401).send({
-      data: null,
       errors: [
         {
           message: errorMessage,

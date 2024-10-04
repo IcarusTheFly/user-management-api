@@ -20,6 +20,7 @@ import {
 } from "./users.validators";
 import { UserCreateBody, UserUpdateBody } from "./users.types";
 import { broadcastNotification } from "@user-management-api/real-time-notifications";
+import { isErrorWithStatusType } from "../../utils/typeChecks";
 
 export async function getAllUsersController(
   request: FastifyRequest,
@@ -157,7 +158,9 @@ export async function createUserController(
       createdAt: user.createdAt,
     };
     broadcastNotification(
-      `[User: ${user.id}] :: User created with data: ${JSON.stringify(createdData)}`
+      `[User: ${user.id}] :: User created with data: ${JSON.stringify(
+        createdData
+      )}`
     );
     return reply.status(201).send({
       data: createdData,
@@ -335,12 +338,19 @@ export async function uploadUserAvatarController(
           errors: null,
         });
       } catch (error) {
-        request.log.error(error);
-        return reply.status(500).send({
+        const statusCode = isErrorWithStatusType(error)
+          ? error.statusCode
+          : 500;
+        const errorMessage = isErrorWithStatusType(error)
+          ? error.message
+          : `An unexpected error occurred while uploading user avatar: ${error}`;
+
+        request.log.error(errorMessage);
+        return reply.status(statusCode).send({
           data: null,
           errors: [
             {
-              message: `An unexpected error occurred while uploading user avatar: ${error}`,
+              message: errorMessage,
             },
           ],
         });

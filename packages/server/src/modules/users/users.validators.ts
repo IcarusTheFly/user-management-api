@@ -1,4 +1,5 @@
 import { MultipartFile } from "@fastify/multipart";
+import { fileUploadValidMimeTypes } from "../../config";
 
 const userIdValidationError = (id: string) => {
   if (isNaN(Number(id))) {
@@ -105,8 +106,7 @@ export const validateUserAvatarFile = (part: MultipartFile) => {
       message: "Validation error: file must have a mimetype",
     });
   }
-  const validMimeTypes = ["image/jpeg", "image/png"];
-  if (!validMimeTypes.includes(part.mimetype)) {
+  if (!fileUploadValidMimeTypes.includes(part.mimetype)) {
     errors.push({
       message:
         "Validation error: Invalid file type. Only JPEG and PNG are allowed",
