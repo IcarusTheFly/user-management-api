@@ -9,12 +9,14 @@ import {
   getUser,
   getUserByEmail,
   updateUser,
+  uploadAvatar,
 } from "./users.services";
 import {
   validateCreateUser,
   validateDeleteUser,
   validateGetUser,
   validateUpdateUser,
+  validateUserAvatarFile,
 } from "./users.validators";
 import { UserCreateBody, UserUpdateBody } from "./users.types";
 
@@ -289,5 +291,59 @@ export async function deleteUserController(
         },
       ],
     });
+  }
+}
+
+export async function uploadUserAvatarController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const { id } = request.params as { id: string };
+  const parts = request.parts();
+
+  for await (const part of parts) {
+    if (part.type === "file") {
+      const validationErrors = validateUserAvatarFile(part);
+      if (validationErrors.length > 0) {
+        request.log.error("Validation error");
+        return reply.status(400).send({
+          data: null,
+          errors: validationErrors,
+        });
+      }
+
+      try {
+        const fileName = `${id}-${Date.now()}-${part.filename}`;
+        await uploadAvatar(part, fileName, Number(id));
+        request.log.info(`Avatar successfully uploaded (${fileName})`);
+        return reply.status(201).send({
+          data: {
+            avatarFileName: fileName,
+          },
+          errors: null,
+        });
+      } catch (error) {
+        request.log.error(error);
+        return reply.status(500).send({
+          data: null,
+          errors: [
+            {
+              message: `An unexpected error occurred while uploading user avatar: ${error}`,
+            },
+          ],
+        });
+      }
+    } else {
+      const errorMessage = "A file must be selected.";
+      request.log.error(errorMessage);
+      return reply.status(400).send({
+        data: null,
+        errors: [
+          {
+            message: errorMessage,
+          },
+        ],
+      });
+    }
   }
 }

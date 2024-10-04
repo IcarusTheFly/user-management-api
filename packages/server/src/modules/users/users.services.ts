@@ -1,6 +1,10 @@
+import fs from "fs";
+import path from "path";
+import { MultipartFile } from "@fastify/multipart";
 import { PrismaClient } from "@prisma/client";
 import { UserUpdateProps } from "./users.types";
 import { encryptPassword } from "../../utils/passwordHandler";
+import { uploadDir } from "../../config";
 
 const prisma = new PrismaClient();
 
@@ -109,4 +113,30 @@ export const constructPaginationUrls = (
     prevSkip !== null ? `${baseUrl}?&limit=${limit}&skip=${prevSkip}` : null;
 
   return { nextUrl, prevUrl };
+};
+
+export const uploadAvatar = async (
+  part: MultipartFile,
+  fileName: string,
+  id: number
+) => {
+  const uploadDirectory = path.join(__dirname, uploadDir);
+
+  if (!fs.existsSync(uploadDirectory)) {
+    fs.mkdirSync(uploadDirectory, { recursive: true });
+  }
+
+  const filePath = path.join(uploadDirectory, fileName);
+
+  await new Promise((resolve, reject) => {
+    const writeStream = fs.createWriteStream(filePath);
+    part.file.pipe(writeStream);
+    writeStream.on("finish", resolve);
+    writeStream.on("error", reject);
+  });
+
+  return prisma.user.update({
+    where: { id: id },
+    data: { avatar: fileName },
+  });
 };

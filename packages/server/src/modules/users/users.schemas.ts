@@ -5,6 +5,7 @@ const userObjectSchema = {
     email: { type: "string" },
     name: { type: ["string", "null"] },
     isAdmin: { type: "boolean" },
+    avatar: { type: "string" },
     createdAt: { type: "string", format: "date-time" },
   },
 };
@@ -121,6 +122,7 @@ export const userResponseSchema = {
           },
         },
       },
+      400: errorsResponseSchema,
       401: errorsResponseSchema,
       403: errorsResponseSchema,
       404: errorsResponseSchema,
@@ -140,9 +142,9 @@ export const userCreateSchema = {
           errors: { type: "null" },
         },
       },
+      400: errorsResponseSchema,
       401: errorsResponseSchema,
       403: errorsResponseSchema,
-      400: errorsResponseSchema,
       500: errorsResponseSchema,
     },
   },
@@ -159,9 +161,9 @@ export const userUpdateSchema = {
           errors: { type: "null" },
         },
       },
+      400: errorsResponseSchema,
       401: errorsResponseSchema,
       403: errorsResponseSchema,
-      400: errorsResponseSchema,
       500: errorsResponseSchema,
     },
   },
@@ -171,7 +173,37 @@ export const userDeleteSchema = {
   schema: {
     response: {
       204: { description: "No Content", type: "null" },
+      400: errorsResponseSchema,
       404: errorsResponseSchema,
+      500: errorsResponseSchema,
+    },
+  },
+};
+
+export const userUploadAvatarSchema = {
+  schema: {
+    body: {
+      required: ["file"],
+      properties: {
+        file: { type: "string", format: "binary" },
+      },
+    },
+    response: {
+      201: {
+        type: "object",
+        properties: {
+          data: {
+            type: "object",
+            properties: {
+              avatarFileName: { type: "string" },
+            },
+          },
+          errors: { type: "null" },
+        },
+      },
+      400: errorsResponseSchema,
+      401: errorsResponseSchema,
+      403: errorsResponseSchema,
       500: errorsResponseSchema,
     },
   },

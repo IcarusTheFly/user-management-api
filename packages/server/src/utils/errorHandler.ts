@@ -1,10 +1,23 @@
 import { FastifyError, FastifyReply, FastifyRequest } from "fastify";
+import { isErrorWithStatusType } from "./typeChecks";
 
 const fastifyErrorHandler = (
   error: FastifyError,
   request: FastifyRequest,
   reply: FastifyReply
 ) => {
+  if (isErrorWithStatusType(error)) {
+    request.log.error(error.message);
+    return reply.status(error.statusCode).send({
+      data: null,
+      errors: [
+        {
+          message: error.message,
+        },
+      ],
+    });
+  }
+
   if (error.validation) {
     const errorMessage = "Validation error: " + error.message;
     request.log.error(errorMessage);

@@ -1,26 +1,37 @@
 import fastify, { FastifyInstance } from "fastify";
 import fastifyJwt from "@fastify/jwt";
-import { loggerOptions } from "./config";
+import fastifyRateLimit from "@fastify/rate-limit";
+import fastifyMultipart from "@fastify/multipart";
+import { fileUploadOptions, loggerOptions } from "./config";
 import fastifyErrorHandler from "./utils/errorHandler";
 import { loginRoutes } from "./modules/login/login.routes";
 import { userRoutes } from "./modules/users/users.routes";
 
 const PORT: number = Number(process.env.PORT) || 3000;
 const HOST: string = process.env.HOST || "0.0.0.0";
-const ENV: "development" | "production" | "test" =
-  (process.env.ENV as "development" | "production" | "test") || "production";
+const ENVIRONMENT: "development" | "production" | "test" =
+  (process.env.ENVIRONMENT as "development" | "production" | "test") ||
+  "production";
 const JWT_SECRET: string = process.env.JWT_SECRET || "";
+const RATE_LIMIT: number = Number(process.env.RATE_LIMIT) || 50;
+const RATE_LIMIT_TIME_WINDOW: string =
+  process.env.RATE_LIMIT_TIME_WINDOW || "1 minute";
 
 export const server: FastifyInstance = fastify({
-  logger: loggerOptions[ENV],
+  logger: loggerOptions[ENVIRONMENT],
 });
 
 const startServer = async () => {
   try {
     server.setErrorHandler(fastifyErrorHandler);
-    server.register(fastifyJwt, {
+    await server.register(fastifyJwt, {
       secret: JWT_SECRET,
     });
+    await server.register(fastifyRateLimit, {
+      max: RATE_LIMIT,
+      timeWindow: RATE_LIMIT_TIME_WINDOW,
+    });
+    await server.register(fastifyMultipart, fileUploadOptions);
 
     await server.register(userRoutes, { prefix: "/api/users" });
     await server.register(loginRoutes);

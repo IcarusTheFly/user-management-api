@@ -5,12 +5,14 @@ import {
   getAllUsersController,
   getUserController,
   updateUserController,
+  uploadUserAvatarController,
 } from "./users.controllers";
 import {
   userResponseSchema,
   allUsersResponseSchema,
   userCreateSchema,
   userUpdateSchema,
+  userUploadAvatarSchema,
 } from "./users.schemas";
 import { controlRoleBasedAccess } from "../../middleware/controlRoleBasedAccess";
 
@@ -31,6 +33,15 @@ export const userRoutes = async (server: FastifyInstance) => {
       ...userCreateSchema,
     },
     createUserController
+  );
+
+  server.post(
+    "/:id/upload-avatar",
+    {
+      preValidation: [controlRoleBasedAccess(true)],
+      ...userUploadAvatarSchema,
+    },
+    uploadUserAvatarController
   );
 
   server.get(

@@ -1,3 +1,5 @@
+import { MultipartFile } from "@fastify/multipart";
+
 const userIdValidationError = (id: string) => {
   if (isNaN(Number(id))) {
     return `Validation error: ID (${id}) is not a valid number`;
@@ -85,6 +87,29 @@ export const validateGetUser = (id: string) => {
   if (userIdErrorMessage) {
     errors.push({
       message: userIdErrorMessage,
+    });
+  }
+
+  return errors;
+};
+
+export const validateUserAvatarFile = (part: MultipartFile) => {
+  const errors = [];
+  if (!part.filename) {
+    errors.push({
+      message: "Validation error: file must have a filename",
+    });
+  }
+  if (!part.mimetype) {
+    errors.push({
+      message: "Validation error: file must have a mimetype",
+    });
+  }
+  const validMimeTypes = ["image/jpeg", "image/png"];
+  if (!validMimeTypes.includes(part.mimetype)) {
+    errors.push({
+      message:
+        "Validation error: Invalid file type. Only JPEG and PNG are allowed",
     });
   }
 
