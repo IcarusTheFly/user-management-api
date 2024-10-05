@@ -8,7 +8,7 @@
     "emitDeclarationOnly": false,
     "moduleResolution": "node",
     "target": "ESNext",
-    "module": "ESNext"
+    "module": "CommonJS",
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
