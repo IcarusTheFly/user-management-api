@@ -187,6 +187,10 @@ I added a very simple logging system across the project. Personally, I like crea
 
 Of course, I couldn't forget!
 
+### CI/CD pipelines
+
+Personally, I like using Jenkins for CI/CD pipelines. We could add some github actions, and at least make sure that the tests are passing before we deploy the code. This will make more sense in the future, when more tests are added.
+
 ## Conclusion
 
 This was a very interesting project to work on, and I appreciate the time you took to read all my verbose notes.
