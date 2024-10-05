@@ -2,6 +2,7 @@ export interface UserUpdateProps {
   email?: string;
   name?: string;
   password?: string;
+  salt?: string;
   isAdmin?: boolean;
   createdAt?: string;
 }

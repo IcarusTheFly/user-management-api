@@ -6,8 +6,7 @@
   "author": "Omar Ferreiro <IcarusTheFly@users.noreply.github.com>",
   "license": "ISC",
   "directories": {
-    "prisma": "prisma",
-    "test": "__tests__"
+    "prisma": "prisma"
   },
   "files": [
     "prisma"

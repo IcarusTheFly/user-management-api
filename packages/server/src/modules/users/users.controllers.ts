@@ -165,6 +165,7 @@ export async function createUserController(
       email: user.email,
       name: user.name,
       isAdmin: user.isAdmin,
+      avatar: user.avatar,
       createdAt: user.createdAt,
     };
     broadcastNotification(
@@ -257,6 +258,7 @@ export async function updateUserController(
       email: user.email,
       name: user.name,
       isAdmin: user.isAdmin,
+      avatar: user.avatar,
       createdAt: user.createdAt,
     };
     broadcastNotification(
