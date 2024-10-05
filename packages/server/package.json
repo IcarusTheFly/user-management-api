@@ -8,10 +8,11 @@
   "main": "src/server.ts",
   "directories": {
     "src": "src",
-    "test": "__tests__"
+    "test": "tests"
   },
   "files": [
-    "src"
+    "src",
+    "dist"
   ],
   "repository": {
     "type": "git",
@@ -19,7 +20,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "start": "tsnd src/server.ts",
+    "start": "node dist/server.js",
     "dev": "tsnd src/server.ts",
     "lint": "eslint src/**/*.ts",
     "test": "jest"

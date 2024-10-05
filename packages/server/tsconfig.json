@@ -7,9 +7,9 @@
     "baseUrl": "./",
     "paths": {
       "@user-management-api/db/*": ["../db/src/*"],
-      "@user-management-api/real-time-notifications/*": ["../real-time-notifications/src/*"]
+      "@user-management-api/real-time-notifications/*": ["../real-time-notifications/*"]
     }
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "__tests__", "dist"]
+  "exclude": ["node_modules", "dist"]
 }
