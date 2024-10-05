@@ -5,6 +5,7 @@
     "packages/*"
   ],
   "scripts": {
+    "build": "npx lerna run build",
     "lint": "lerna run lint",
     "dev": "lerna run dev",
     "test": "lerna run test",
