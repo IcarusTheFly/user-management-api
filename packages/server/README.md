@@ -1,11 +1,3 @@
-# `server`
+# `@user-management-api/server`
 
-> TODO: description
-
-## Usage
-
-```
-const server = require('server');
-
-// TODO: DEMONSTRATE API
-```
+This package contains the API server implementation using Fastify. It is responsible for handling incoming requests, routing them to the appropriate controllers, and returning the appropriate responses.

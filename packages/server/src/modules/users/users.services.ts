@@ -77,7 +77,9 @@ export const updateUser = async (
     updateData.email = email;
   }
   if (password !== undefined) {
-    updateData.password = password;
+    const { hash, salt } = encryptPassword(password);
+    updateData.password = hash;
+    updateData.salt = salt;
   }
   if (name !== undefined) {
     updateData.name = name;

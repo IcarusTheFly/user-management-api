@@ -7,7 +7,7 @@ export const openWebSocketConnection = (socket: WebSocket) => {
   console.info("[WS] Connection opened");
 
   socket.on("message", (message: string) => {
-    console.log("[WS] Message received:", message);
+    console.info("[WS] Message received:", message);
   });
 
   socket.on("close", () => {
