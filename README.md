@@ -159,6 +159,10 @@ We should also create mocked data in a separate file, and use it in the tests. M
 
 I believe E2E tests are the best way to test a system. However, it makes more sense to test a FrontEnd together with the API. That ensures that everything works properly together. Using `Cypress` would be my choice for this.
 
+#### Validations
+
+We should add in the future more extensive validations for the API. For example, we can add regular expressions to check if an email is valid, or if a password is strong enough.
+
 ### Load balancing
 
 In a large system, where various server are set up together, it's important to have a way to balance the load between them. In the past I worked with NginX and HAProxy to set up rate limiting and load balancing.
@@ -183,13 +187,17 @@ Using a cloud service when applicable would be a good idea.
 
 I added a very simple logging system across the project. Personally, I like creating my own loggers, instead of just relying on a library. The reason is that it gives me more freedom and control over the logging, and I can customize it to my needs. For this project, it wasn't needed to do anything fancy, so I kept it simple, but I would like to create a custom package exclusively for this.
 
-### Add posts CRUD endpoints
-
-Of course, I couldn't forget!
-
 ### CI/CD pipelines
 
 Personally, I like using Jenkins for CI/CD pipelines. We could add some github actions, and at least make sure that the tests are passing before we deploy the code. This will make more sense in the future, when more tests are added.
+
+### User roles
+
+Should an admin user be able to delete admin users? We might as well aadd more user roles to handle cases like this.
+
+### Add posts CRUD endpoints
+
+Of course, I couldn't forget!
 
 ## Conclusion
 
