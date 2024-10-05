@@ -4,7 +4,7 @@ User Management API implementation with Fastify and Prisma.
 
 ## General Architecture
 
-The API is built using Fastify, Prisma, and TypeScript. I have structured the project into packages to make it easier to manage and maintain. This is a monorepo project, and the packages are defined in the `packages` directory and are organized into three main categories: server, database, and real-time notifications.
+The API is built using Fastify, Prisma, and TypeScript. I have structured the project into packages to make it easier to manage and maintain. This is a monorepo project, and the packages are defined in the `packages` directory and organized into three main categories: server, database, and real-time notifications.
 
 ### Packages
 
@@ -14,15 +14,15 @@ The server package contains the API server implementation using Fastify. It is r
 
 #### db
 
-The database package contains the database definition using Prisma. Every time we make a change to the database schema, we need to run the migrations to update the database. The migrations are defined in the `prisma/migrations`. It makes sense to have our database definition in a separate package to make it easier to manage and maintain.
+The database package contains the database definition using Prisma. Every time a change is made to the database schema, it's required to run the migrations to update the database. The migrations are defined in the `prisma/migrations`. Having our database definition in a separate package makes it easier to manage and maintain.
 
 #### real-time-notifications
 
-The real-time notifications package contains the implementation of real-time notifications using WebSockets. It is responsible for opening new WebSocket connections, broadcasting notifications to all connected clients, and managing the WebSocket connection lifecycle, using the `ws` package for WebSocket communication. The goal of this package is to provide a centralized place for real-time notifications, allowing different parts of the application to easily send notifications to all connected clients. In a large application, it may be necessary to have multiple WebSocket connections for different purposes, such as sending notifications to specific users or groups of users.
+The real-time notifications package contains the implementation of real-time notifications using WebSockets. It is responsible for opening new WebSocket connections, broadcasting notifications to all connected clients and managing the WebSocket connection lifecycle using the `ws` package for WebSocket communication. The goal of this package is to provide a centralized place for real-time notifications, allowing different parts of the application to easily send notifications to all connected clients. In a large application, it may be necessary to have multiple WebSocket connections for different purposes, such as sending notifications to specific users or groups of users.
 
 ## Development process
 
-Here I'm going to detail step by step how I developed this project, and explain some of my decisions and my thought process.
+Here, I'm going to detail step by step how I developed this project, and explain some of my decisions and my thought process.
 
 ### Task 1: Advanced Monorepo Setup
 
@@ -30,7 +30,7 @@ While this task was optional, I decided to go with it. Although this API was sup
 
 ### Task 2: Advanced Server Setup
 
-I was reading a bit through Fastify's documentation and quickly set up a basic server using TypeScript. Now, I had to make a choice on how to organize the routes and controllers. Many projects use "routes" and "controllers" folders. However, I like more the _screaming architecture_ approach, where every different model / area has its own folder, and inside it we can place controllers, services, etc. From my perspective, this approach makes the project easier to maintain and understand, specially when it gets larger.
+I was reading a bit through Fastify's documentation and quickly set up a basic server using TypeScript. Now, I had to make a choice on how to organize the routes and controllers. Many projects use "routes" and "controllers" folders. However, I like better the _screaming architecture_ approach, where every different model / area has its own folder, and inside it we can place controllers, services, etc. From my perspective, this approach makes the project easier to maintain and understand, especially when it gets larger.
 
 ### Task 3: Advanced Database Integration with Prisma and PostgreSQL
 
@@ -38,7 +38,7 @@ I integrated Prisma with PostgreSQL. I chose AWS RDS as my database provider, an
 
 After that, I created basic CRUD operations for the "users" table, and I tested them with Postman. I created a file for routes, which will link fastify routes to controllers, which have their own file. Then, I also created a file for services, as I felt more comfortable separating the queries to the DB from the controllers. That seems more scalable to me, as in the future, if we need to change the way we connect with the database, we can modify only the service file, and not the controllers.
 
-As for the schema, I saw that many people use "zod" for schema validation. However, I wanted to use a different approach. Digging into Fastify's documentation, I found that Fastify has a built-in schema validation system. Instead of adding schemas within a common `addSchema` function, I created a JSON schema file for each route. A new file specifically for schemas was created, and I was happy with how simple and clear it looks.
+As for the schema, I realized that many people use "zod" for schema validation. However, I wanted to use a different approach. Digging into Fastify's documentation, I found that Fastify has a built-in schema validation system. Instead of adding schemas within a common `addSchema` function, I created a JSON schema file for each route. A new file specifically for schemas was created, and I was happy with how simple and clear it looks.
 
 Automatic validation is also great, but a in a long run, I personally like having my own validations. That's why I created a file for validations, and that helped to have an extra layer of validation, and return our custom errors, instead of just returning the default Fastify errors.
 
@@ -52,11 +52,11 @@ I added the logic to create and validate JWT tokens. A new endpoint for login wa
 
 I encrypted the passwords using crypto, and added "salt" to the user model.
 
-A directory for the login endpoint was added to the server package At some point, it was convenient to have a types file for users and login, so I added files for that.
+A directory for the login endpoint was added to the server package. At some point, it was convenient to have a types file for users and login, so I added files for that.
 
 ### Task 5: Advanced API features
 
-I created a new endpoint for uploading user avatars. User avatars are stored in the `uploads` directory, and the endpoint returns the file name of the uploaded file. The field "avatar" was added to the user model, and I added a validation for it. Only an admin user can upload a user avatar. In some systems, it could be convenient that every user uploads his own avatar. The permissions for this action would be different in a random online forum and in a company's internal application. I decided to forbid non-admin users to upload his own avatar. A different approach would be to allow non-admin users to upload avatars, but only for themselves.
+I created a new endpoint for uploading user avatars. User avatars are stored in the `uploads` directory, and the endpoint returns the name of the uploaded file. The field "avatar" was added to the user model, and I added a validation for it. Only an admin user can upload a user avatar. In some systems, it could be convenient that every user uploads his own avatar. The permissions for this action would be different in a random online forum and in a company's internal application. I decided to forbid non-admin users to upload his own avatar. A different approach would be to allow non-admin users to upload avatars, but only for themselves.
 
 As for the schema of this new endpoint, I saw an awkward warning message from TypeScript. The body usually requires the type "object" in the schema, but if I add it here, the file upload will fail. As I wasn't sure how to fix this, and it was just a warning that didn't seem to be very relevant, and I decided to ignore it. I would like to take another look at this later though.
 
@@ -64,15 +64,15 @@ For real-time notifications, I created a new endpoint. However, as I was setting
 
 I decided to do this in a way that users can connect to the websocket and see messages for relevant operations in the system (create, update, delete user, upload avatar). However, the users should not be able to send any sort of notification on their own. This socket is strictly for information purposes (read-only). The users can only connect to the websocket if they are authenticated.
 
-At some point here I though that the API also needed a rate limit, so I added it with a fastify plugin. I added rate limiting options as environment variables.
+At some point here I thought that the API also needed a rate limit, so I added it with a fastify plugin. I added rate limiting options as environment variables.
 
 Why did I add these options as environment variables, when I could have added them to the config file, as I did for pagination?
 
-For me, the decision was very clear. It could happen that we deploy our API in a customer's infrastructure. We might want to adjust our rate limit depending on the customer's needs. However, in very rare ocassions we are going to define pagination differently for different customers. That was the main reason. Rate limiting can be tailored for each customer, and pagination is something generic for our API.
+For me, the decision was very clear. It could happen that we deploy our API in a customer's infrastructure. We might want to adjust our rate limit depending on the customer's needs. However, in very rare ocassions we are going to define pagination differently for different customers. That was the main reason. Rate limiting can be tailored for each customer, and the pagination is something generic for our API.
 
 ### Task 6: Testing and Documentation
 
-I had used Swagger in the past, and checking into Fastify's documentation, I saw that it was very simple to add Swagger to the API with a Fastify plugin. It was pretty straightforward. I just to fix the schemas a bit to have the right tags. At this point, the server file was starting to get a bit larger than expected, so I created a folder for the plugins, which will make the codebase more clean and easier to maintain in the future.
+I had used Swagger in the past, and checking Fastify's documentation, I saw that it was very simple to add Swagger to the API with a Fastify plugin. It was pretty straightforward. I just to fix the schemas a bit to have the right tags. At this point, the server file was starting to get a bit larger than expected, so I created a folder for the plugins, which will make the codebase more clean and easier to maintain in the future.
 
 Then I had to add some tests using Jest. This is one of the simplest tasks of the project, but it would also take time to add tests for everything. I added tests for routes and controllers.
 
@@ -84,7 +84,7 @@ As I mentioned before, I decided to go with a monorepo setup. This required to m
 
 ## Deployment details
 
-The API can be acessed at https://omarferreiroapi.online
+The API can be accessed at https://omarferreiroapi.online
 
 In order to get the access token, it's required to send the following body to `https://omarferreiroapi.online/api/v1/login`:
 
@@ -185,7 +185,7 @@ I added a very simple logging system across the project. Personally, I like crea
 
 ### Add posts CRUD endpoints
 
-Of course, I couldn't forget :)
+Of course, I couldn't forget!
 
 ## Conclusion
 

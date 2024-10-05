@@ -36,8 +36,8 @@ export async function getAllUsersController(
 
   try {
     const users = await getAllUsers(Number(limit), Number(skip));
-    const baseUrl = `${request.protocol}://${request.hostname}:${
-      request.port
+    const baseUrl = `${request.protocol}://${request.hostname}${
+      request.port ? `:${request.port}` : ""
     }${request.url.split("?").shift()}`;
     const { nextUrl, prevUrl } = constructPaginationUrls(
       baseUrl,
