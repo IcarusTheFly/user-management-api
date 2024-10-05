@@ -7,8 +7,7 @@
   "license": "ISC",
   "main": "src/websocket.ts",
   "directories": {
-    "src": "src",
-    "test": "__tests__"
+    "src": "src"
   },
   "files": [
     "src"
@@ -20,8 +19,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsnd src/websocket.ts",
-    "lint": "eslint src/**/*.ts",
-    "test": "node ./__tests__/real-time-notifications.test.js"
+    "lint": "eslint src/**/*.ts"
   },
   "bugs": {
     "url": "https://github.com/IcarusTheFly/user-management-api/issues"

@@ -57,13 +57,18 @@ export async function getAllUsersController(
       },
     });
   } catch (error) {
-    request.log.error(error);
-    return reply.status(500).send({
+    const statusCode = isErrorWithStatusType(error) ? error.statusCode : 500;
+    const errorMessage = isErrorWithStatusType(error)
+      ? error.message
+      : `An unexpected error occurred while retrieving users (${error})`;
+
+    request.log.error(errorMessage);
+    return reply.status(statusCode).send({
       data: null,
       meta: null,
       errors: [
         {
-          message: "An unexpected error occurred while retrieving users",
+          message: errorMessage,
         },
       ],
     });
@@ -104,12 +109,17 @@ export async function getUserController(
       errors: null,
     });
   } catch (error) {
-    request.log.error(error);
-    return reply.status(500).send({
+    const statusCode = isErrorWithStatusType(error) ? error.statusCode : 500;
+    const errorMessage = isErrorWithStatusType(error)
+      ? error.message
+      : `An unexpected error occurred while retrieving user with id: ${numericId} (${error})`;
+
+    request.log.error(errorMessage);
+    return reply.status(statusCode).send({
       data: null,
       errors: [
         {
-          message: `An unexpected error occurred while retrieving user with id: ${numericId}`,
+          message: errorMessage,
         },
       ],
     });
@@ -167,11 +177,17 @@ export async function createUserController(
       errors: null,
     });
   } catch (error) {
-    request.log.error(error);
-    return reply.status(500).send({
+    const statusCode = isErrorWithStatusType(error) ? error.statusCode : 500;
+    const errorMessage = isErrorWithStatusType(error)
+      ? error.message
+      : `An unexpected error occurred while creating user (${error})`;
+
+    request.log.error(errorMessage);
+    return reply.status(statusCode).send({
+      data: null,
       errors: [
         {
-          message: `An unexpected error occurred while creating user: ${error}`,
+          message: errorMessage,
         },
       ],
     });
@@ -251,11 +267,17 @@ export async function updateUserController(
       errors: null,
     });
   } catch (error) {
-    request.log.error(error);
-    return reply.status(500).send({
+    const statusCode = isErrorWithStatusType(error) ? error.statusCode : 500;
+    const errorMessage = isErrorWithStatusType(error)
+      ? error.message
+      : `An unexpected error occurred while updating user (${error})`;
+
+    request.log.error(errorMessage);
+    return reply.status(statusCode).send({
+      data: null,
       errors: [
         {
-          message: `An unexpected error occurred while creating user: ${error}`,
+          message: errorMessage,
         },
       ],
     });
@@ -295,12 +317,17 @@ export async function deleteUserController(
     broadcastNotification(`[User: ${id}] :: User deleted`);
     return reply.status(204).send({});
   } catch (error) {
-    request.log.error(error);
-    return reply.status(500).send({
+    const statusCode = isErrorWithStatusType(error) ? error.statusCode : 500;
+    const errorMessage = isErrorWithStatusType(error)
+      ? error.message
+      : `An unexpected error occurred while deleting user with id: ${numericId} (${error})`;
+
+    request.log.error(errorMessage);
+    return reply.status(statusCode).send({
       data: null,
       errors: [
         {
-          message: `An unexpected error occurred while deleting user with id: ${numericId}`,
+          message: errorMessage,
         },
       ],
     });
@@ -343,7 +370,7 @@ export async function uploadUserAvatarController(
           : 500;
         const errorMessage = isErrorWithStatusType(error)
           ? error.message
-          : `An unexpected error occurred while uploading user avatar: ${error}`;
+          : `An unexpected error occurred while uploading user avatar (${error})`;
 
         request.log.error(errorMessage);
         return reply.status(statusCode).send({
@@ -356,7 +383,7 @@ export async function uploadUserAvatarController(
         });
       }
     } else {
-      const errorMessage = "A file must be selected.";
+      const errorMessage = "A file must be selected";
       request.log.error(errorMessage);
       return reply.status(400).send({
         data: null,

@@ -18,7 +18,8 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "node ./__tests__/db.test.js"
+    "migrate-dev": "prisma migrate dev",
+    "migrate-deploy": "prisma migrate deploy"
   },
   "bugs": {
     "url": "https://github.com/IcarusTheFly/user-management-api/issues"

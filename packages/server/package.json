@@ -22,7 +22,7 @@
     "start": "node build/server.js",
     "dev": "tsnd src/server.ts",
     "lint": "eslint src/**/*.ts",
-    "test": "node ./__tests__/server.test.ts"
+    "test": "jest"
   },
   "bugs": {
     "url": "https://github.com/IcarusTheFly/user-management-api/issues"
@@ -39,9 +39,14 @@
     "fastify": "5.0.0"
   },
   "devDependencies": {
+    "@types/jest": "29.5.13",
     "@types/node": "22.7.4",
+    "@types/supertest": "6.0.2",
     "@types/ws": "8.5.12",
+    "jest": "29.7.0",
     "pino-pretty": "11.2.2",
+    "supertest": "7.0.0",
+    "ts-jest": "29.2.5",
     "typescript": "5.6.2"
   }
 }
