@@ -5,7 +5,7 @@
   "keywords": [],
   "author": "Omar Ferreiro <IcarusTheFly@users.noreply.github.com>",
   "license": "ISC",
-  "main": "src/websocket.ts",
+  "main": "dist/websocket.js",
   "directories": {
     "src": "src"
   },

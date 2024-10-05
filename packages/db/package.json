@@ -17,7 +17,7 @@
     "url": "git+https://github.com/IcarusTheFly/user-management-api.git"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "prisma generate",
     "migrate-dev": "prisma migrate dev",
     "migrate-deploy": "prisma migrate deploy"
   },

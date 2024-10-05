@@ -2,8 +2,14 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": false,
+    "moduleResolution": "node",
+    "target": "ESNext",
+    "module": "CommonJS",
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "__tests__", "dist"]
+  "exclude": ["node_modules", "dist"]
 }

@@ -5,9 +5,11 @@
     "packages/*"
   ],
   "scripts": {
+    "build": "npx lerna run build",
     "lint": "lerna run lint",
     "dev": "lerna run dev",
-    "test": "lerna run test"
+    "test": "lerna run test",
+    "start": "npx lerna run start"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.1.0",
