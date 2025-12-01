@@ -193,12 +193,8 @@ Personally, I like using Jenkins for CI/CD pipelines. We could add some github a
 
 ### User roles
 
-Should an admin user be able to delete admin users? We might as well aadd more user roles to handle cases like this.
+Should an admin user be able to delete admin users? We might as well add more user roles to handle cases like this.
 
 ### Add posts CRUD endpoints
 
 Of course, I couldn't forget!
-
-## Conclusion
-
-This was a very interesting project to work on, and I appreciate the time you took to read all my verbose notes.
